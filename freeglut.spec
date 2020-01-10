@@ -1,14 +1,15 @@
 Summary:        A freely licensed alternative to the GLUT library
 Name:           freeglut
-Version:        2.8.1
-Release:        3%{?dist}
+Version:        3.0.0
+Release:        8%{?dist}
 URL:            http://freeglut.sourceforge.net
-Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 # For the manpages
-Source1:        http://downloads.sourceforge.net/openglut/openglut-0.6.3-doc.tar.gz
+Source1:        https://downloads.sourceforge.net/openglut/openglut-0.6.3-doc.tar.gz
 License:        MIT
 Group:          System Environment/Libraries
 
+BuildRequires:  cmake
 BuildRequires:  pkgconfig libGLU-devel libXext-devel libXxf86vm-devel
 BuildRequires:  libXi-devel libICE-devel
 # The virtual Provides below is present so that this freeglut package is a
@@ -50,14 +51,12 @@ license.
 %setup -q -a 1
 
 %build
-# --disable-warnings -> don't add -Werror to CFLAGS
-%configure --disable-static --disable-warnings
+%{cmake} -DFREEGLUT_BUILD_STATIC_LIBS=OFF .
 make %{?_smp_mflags}
 
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-rm $RPM_BUILD_ROOT/%{_libdir}/*.la
 
 mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man3
 install -p -m 644 doc/man/*.3 $RPM_BUILD_ROOT/%{_mandir}/man3
@@ -69,23 +68,55 @@ install -p -m 644 doc/man/*.3 $RPM_BUILD_ROOT/%{_mandir}/man3
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS ChangeLog COPYING INSTALL NEWS README TODO doc/*.png doc/*.html
+%doc AUTHORS ChangeLog COPYING README doc/*.png doc/*.html
 # don't include contents of doc/ directory as it is mostly obsolete
-%{_libdir}/libglut*.so.*
+%{_libdir}/libglut.so.3*
 
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/GL/*.h
 %{_libdir}/libglut.so
+%{_libdir}/pkgconfig/freeglut.pc
 %{_mandir}/man3/*
 
 
 %changelog
-* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 2.8.1-3
-- Mass rebuild 2014-01-24
+* Tue May 01 2018 Adam Jackson <ajax@redhat.com> - 3.0.0-8
+- HTTPS URLs
+- Pin soname to libglut.so.3 in the %%files glob
 
-* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 2.8.1-2
-- Mass rebuild 2013-12-27
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.0-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.0-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.0-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Tue Mar 10 2015 Tomas Smetana <tsmetana@redhat.com> 3.0.0-1
+- New upstream version
+
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.8.1-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.8.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Thu Jan 23 2014 Tomas Smetana <tsmetana@redhat.com> - 2.8.1-3
+- fix #1017551: don't crash on manipulating active menus
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.8.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
 * Mon Apr 08 2013 Tomas Smetana <tsmetana@redhat.com> - 2.8.1-1
 - fix #948696: new upstream bugfix release, drop patches

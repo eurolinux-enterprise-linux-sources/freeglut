@@ -1,7 +1,7 @@
 Summary:        A freely licensed alternative to the GLUT library
 Name:           freeglut
 Version:        2.8.1
-Release:        1%{?dist}
+Release:        3%{?dist}
 URL:            http://freeglut.sourceforge.net
 Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 # For the manpages
@@ -81,6 +81,12 @@ install -p -m 644 doc/man/*.3 $RPM_BUILD_ROOT/%{_mandir}/man3
 
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 2.8.1-3
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 2.8.1-2
+- Mass rebuild 2013-12-27
+
 * Mon Apr 08 2013 Tomas Smetana <tsmetana@redhat.com> - 2.8.1-1
 - fix #948696: new upstream bugfix release, drop patches
 - fix #925363: aarch64 support
